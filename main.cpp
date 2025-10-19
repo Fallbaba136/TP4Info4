@@ -88,9 +88,9 @@ noeud* recherchePreRec(noeud* y)
 {
     if(y->gauche != NULL)
         return rechercheMax(y->gauche);
-    if(y->pere == NULL) return y->pere;
+    if(y->pere == NULL) return NULL;
     if(y->pere->droite == y) return y->pere;
-    return recherchePreRec(y->pere);
+    else return recherchePreRec(y->pere);
 }
 // Insertion itérative dans un ABR
 
@@ -117,15 +117,21 @@ void insertNoeudIte(noeud **racine, noeud *insert) {
     else
         father->droite = insert;
 }
-void insertRec(noeud* racine, noeud* insert)
+void insertRec(noeud** racine, noeud* insert, noeud* father = NULL)
 {
-    if (racine == NULL) insert = racine;
+    if (racine == NULL)
+    {
+        *racine = insert;
+        insert->pere = father;
+        insert->droite = NULL;
+        insert->gauche = NULL;
+    }
     else
     {
-        if(insert->cle < racine->cle)
-            insertRec(racine->gauche, insert);
-        else if(insert->cle > racine->cle)
-            insertRec(racine->droite, insert);
+        if(insert->cle < (*racine)->cle)
+            insertRec(&(*racine)->gauche, insert, *racine);
+        else if(insert->cle > (*racine)->cle)
+            insertRec(&(*racine)->droite, insert, *racine);
     }
     
 }
